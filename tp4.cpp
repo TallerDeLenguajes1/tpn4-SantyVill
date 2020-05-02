@@ -12,6 +12,10 @@ typedef struct
 
 void cargarTareas(tarea *tareas,int n);
 int realizarTareas(tarea *tareasP, tarea *tareasR,int n);
+void mostrarTareas(tarea *tareasP, tarea *tareasR,int n,int c);
+tarea* buscarTarea(tarea *tareasP,tarea *tareasR,int n,int c);
+
+//=========================MIAN=========================
 
 int main(){
     srand (time(NULL));
@@ -23,29 +27,58 @@ int main(){
     tarea *tareasRealizadas=(tarea *)malloc(sizeof(tarea)*n);
     cargarTareas(tareasPendientes, n);
     c=realizarTareas(tareasPendientes,tareasRealizadas,n);
-    
-    printf("\n\nTareas realizadas: ");
-    for (i = 0; i < c; i++)
-    {
-            printf("\n\nTarea numero %d",(tareasRealizadas+i)->tareaID);
-            printf("\nDescripcion: %s",(tareasRealizadas+i)->descripcion);
-            printf("\nDuracion: %d",(tareasRealizadas+i)->duracion);
-    }
-    printf("\n\nTareas Pendientes: ");
-    for (i = 0; i < n; i++)
-    {
-        if ((tareasPendientes+i)->descripcion!=NULL)
-        {
-            printf("\n\nTarea numero %d",(tareasPendientes+i)->tareaID);
-            printf("\nDescripcion: %s",(tareasPendientes+i)->descripcion);
-            printf("\nDuracion: %d",(tareasPendientes+i)->duracion);
-        }
-    }
+    mostrarTareas(tareasPendientes,tareasRealizadas,n,c);
     getchar();
     getchar();
     free (tareasRealizadas);
     free (tareasPendientes);
     return 0;
+}
+
+//========================FUNCIONES========================
+
+tarea* buscarTarea(tarea *tareasP,tarea *tareasR,int n,int c){
+    int id,i;
+    printf("Ingrese el id de la tarea que desea buscar: ");
+    scanf("%d",&id);
+    for (i = 0; i < c; i++)
+    {
+        if ((tareasR+i)->tareaID==id)
+        {
+            return (tareasR+i);
+        }
+        
+    }
+    
+    for ( i = 0; i < n; i++)
+    {
+        if ((tareasP+i)->tareaID==id)
+        {
+            return (tareasP+i);
+        }
+    }
+}
+
+void mostrarTareas(tarea *tareasP, tarea *tareasR,int n,int c){
+    int i;
+    printf("\n\nTareas realizadas: ");
+    for (i = 0; i < c; i++)
+    {
+            printf("\n\nTarea numero %d",(tareasR+i)->tareaID);
+            printf("\nDescripcion: %s",(tareasR+i)->descripcion);
+            printf("\nDuracion: %d",(tareasR+i)->duracion);
+    }
+    printf("\n\nTareas Pendientes: ");
+    for (i = 0; i < n; i++)
+    {
+        if ((tareasP+i)->descripcion!=NULL)
+        {
+            printf("\n\nTarea numero %d",(tareasP+i)->tareaID);
+            printf("\nDescripcion: %s",(tareasP+i)->descripcion);
+            printf("\nDuracion: %d",(tareasP+i)->duracion);
+        }
+    }
+    
 }
 
 void cargarTareas(tarea *tareas,int n){
