@@ -13,9 +13,9 @@ typedef struct
 void cargarTareas(tarea *tareas,int n);
 int realizarTareas(tarea *tareasP, tarea *tareasR,int n);
 void mostrarTareas(tarea *tareas,int n);
-tarea* buscarTarea(tarea *tareasP,tarea *tareasR,int n,int c);
+tarea* busquedaPorPalabra(tarea *tareasP,tarea *tareasR,int n,int c);
 bool buscar(char *frase,char *palabra);
-
+tarea* buscquedaPorId(tarea *tareasP,tarea *tareasR,int n,int c);
 //===========================MIAN===========================
 
 int main(){
@@ -34,7 +34,12 @@ int main(){
     printf("\n\nTareas Pendientes: ");
     mostrarTareas(tareasPendientes,n);
 
-    paux=buscarTarea(tareasPendientes,tareasRealizadas,n,c);
+    paux=busquedaPorPalabra(tareasPendientes,tareasRealizadas,n,c);
+    printf("\nID de tarea: %d",paux->tareaID);
+    printf("\nDescripcion: %s",paux->descripcion);
+    printf("\nDuracion: %d",paux->duracion);
+
+    paux=buscquedaPorId(tareasPendientes,tareasRealizadas,n,c);
     printf("\nID de tarea: %d",paux->tareaID);
     printf("\nDescripcion: %s",paux->descripcion);
     printf("\nDuracion: %d",paux->duracion);
@@ -48,7 +53,7 @@ int main(){
 
 //========================FUNCIONES========================
 
-tarea* buscarTarea(tarea *tareasP,tarea *tareasR,int n,int c){
+tarea* busquedaPorPalabra(tarea *tareasP,tarea *tareasR,int n,int c){
     int i,j,cont,h;
     char palabra[15];
     tarea *aux;
@@ -101,6 +106,28 @@ bool buscar(char *frase,char *palabra){
         }
     }
     return false;
+}
+
+tarea* buscquedaPorId(tarea *tareasP,tarea *tareasR,int n,int c){
+    int id,i;
+    printf("\nIngrese el id de la tarea que desea buscar: ");
+    scanf("%d",&id);
+    for (i = 0; i < c; i++)
+    {
+        if ((tareasR+i)->tareaID==id)
+        {
+            return (tareasR+i);
+        }
+        
+    }
+    
+    for ( i = 0; i < n; i++)
+    {
+        if ((tareasP+i)->tareaID==id)
+        {
+            return (tareasP+i);
+        }
+    }
 }
 
 void mostrarTareas(tarea *tareas,int n){
