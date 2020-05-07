@@ -10,12 +10,12 @@ typedef struct
 } tarea;
 
 //=========================FUNCIONES=========================
-void cargarTareas(tarea *tareas,int n);
-int realizarTareas(tarea *tareasP, tarea *tareasR,int n);
-void mostrarTareas(tarea *tareas,int n);
-tarea* busquedaPorPalabra(tarea *tareasP,tarea *tareasR,int n,int c);
+void cargarTareas(tarea **tareas,int n);
+int realizarTareas(tarea **tareasP, tarea **tareasR,int n);
+void mostrarTareas(tarea **tareas,int n);
+tarea* busquedaPorPalabra(tarea **tareasP,tarea **tareasR,int n,int c);
 bool buscar(char *frase,char *palabra);
-tarea* buscquedaPorId(tarea *tareasP,tarea *tareasR,int n,int c);
+tarea* buscquedaPorId(tarea **tareasP,tarea **tareasR,int n,int c);
 //===========================MIAN===========================
 
 int main(){
@@ -25,8 +25,8 @@ int main(){
     printf("Ingrese la cantidad de tareas a cargar: ");
     scanf("%d",&n);
     getchar();
-    tarea *tareasPendientes=(tarea *)malloc(sizeof(tarea)*n);
-    tarea *tareasRealizadas=(tarea *)malloc(sizeof(tarea)*n);
+    tarea **tareasPendientes=(tarea **)malloc(sizeof(tarea*)*n);
+    tarea **tareasRealizadas=(tarea **)malloc(sizeof(tarea*)*n);
     cargarTareas(tareasPendientes, n);
     c=realizarTareas(tareasPendientes,tareasRealizadas,n);
     printf("\n\nTareas Realizadas: ");
@@ -53,36 +53,34 @@ int main(){
 
 //========================FUNCIONES========================
 
-tarea* busquedaPorPalabra(tarea *tareasP,tarea *tareasR,int n,int c){
-    int i,j,cont,h;
+tarea* busquedaPorPalabra(tarea **tareasP,tarea **tareasR,int n,int c){
+    int i;
     char palabra[15];
-    tarea *aux;
+    tarea **aux;
     getchar();
     printf("\n\nIngrese la palabra con la que quiere buscar la tarea: ");
     gets(palabra);
     aux=tareasP;
-    for(h=0;h<n;h++){
-        if (aux->descripcion!=NULL)
+    for(i=0;i<n;i++){
+        if (aux[i]!=NULL)
         {
-            if (buscar(aux->descripcion,palabra))
+            if (buscar(aux[i]->descripcion,palabra))
             {
                 printf("\nTarea pendiente:");
-                return aux;
+                return aux[i];
             }
         }
-        aux++;
     }
     aux=tareasR;
-    for(h=0;h<c;h++){
-        if (aux->descripcion!=NULL)
+    for(i=0;i<c;i++){
+        if (aux[i]->descripcion!=NULL)
         {
-            if (buscar(aux->descripcion,palabra))
+            if (buscar(aux[i]->descripcion,palabra))
             {
                 printf("\nTarea realizada:");
-                return aux;
+                return aux[i];
             }
         }
-        aux++;
     }
 }
 
@@ -108,74 +106,74 @@ bool buscar(char *frase,char *palabra){
     return false;
 }
 
-tarea* buscquedaPorId(tarea *tareasP,tarea *tareasR,int n,int c){
+tarea* buscquedaPorId(tarea **tareasP,tarea **tareasR,int n,int c){
     int id,i;
     printf("\nIngrese el id de la tarea que desea buscar: ");
     scanf("%d",&id);
     for (i = 0; i < c; i++)
     {
-        if ((tareasR+i)->tareaID==id)
+        if ((tareasR[i])->tareaID==id)
         {
-            return (tareasR+i);
+            return (tareasR[i]);
         }
         
     }
     
     for ( i = 0; i < n; i++)
     {
-        if ((tareasP+i)->tareaID==id)
+        if ((tareasP[i])->tareaID==id)
         {
-            return (tareasP+i);
+            return (tareasP[i]);
         }
     }
 }
 
-void mostrarTareas(tarea *tareas,int n){
+void mostrarTareas(tarea **tareas,int n){
     int i;
     for (i = 0; i < n; i++)
     {
-        if ((tareas+i)->descripcion!=NULL)
+        if (tareas[i]!=NULL)
         {
-            printf("\n\nTarea numero %d",(tareas+i)->tareaID);
-            printf("\nDescripcion: %s",(tareas+i)->descripcion);
-            printf("\nDuracion: %d",(tareas+i)->duracion);
+            printf("\n\nTarea numero %d",(tareas[i])->tareaID);
+            printf("\nDescripcion: %s",(tareas[i])->descripcion);
+            printf("\nDuracion: %d",(tareas[i])->duracion);
         }
     }
     
 }
 
-void cargarTareas(tarea *tareas,int n){
+void cargarTareas(tarea **tareas,int n){
     int i;
     char descr[60];
     for ( i = 0; i < n; i++)
     {
-        (tareas+i)->tareaID=i+1;
-        (tareas+i)->duracion=rand()%91+10;
+        tareas[i]=(tarea *)malloc(sizeof(tareas));
+        (tareas[i])->tareaID=i+1;
+        (tareas[i])->duracion=rand()%91+10;
         printf("\nIngrese la descripcion de la tarea %d: ",i+1);
         gets(descr);
-        (tareas+i)->descripcion=(char *)malloc(sizeof(char)*strlen(descr));
-        strcpy((tareas+i)->descripcion,descr);
+        (tareas[i])->descripcion=(char *)malloc(sizeof(char)*strlen(descr));
+        strcpy((tareas[i])->descripcion,descr);
     }
 }
 
-int realizarTareas(tarea *tareasP, tarea *tareasR,int n){
+int realizarTareas(tarea **tareasP, tarea **tareasR,int n){
     int opc=0,i,c=0;
     for (i = 0; i < n; i++)
     {
         printf("\nSe realizara la tarea %d?",i+1);
-        printf("\nDescripcion: %s",(tareasP+i)->descripcion);
-        printf("\nDuracion: %d",(tareasP+i)->duracion);
+        printf("\nDescripcion: %s",(tareasP[i])->descripcion);
+        printf("\nDuracion: %d",(tareasP[i])->duracion);
         do
         {
-            printf("\nSI --> 1.\tNO --> 2.");
+            printf("\nSI --> 1.\tNO --> 2.\n");
             scanf("%d",&opc);
         } while (opc!=1 && opc!=2);
         if (opc==1)
         {
-            *(tareasR+c)=*(tareasP+i);
-            (tareasP+i)->descripcion=NULL;
-            (tareasP+i)->tareaID=NULL;
-            (tareasP+i)->duracion=NULL;
+            tareasR[c]=(tarea *) malloc(sizeof(tarea));
+            *(tareasR[c])=*(tareasP[i]);
+            tareasP[i]=NULL;
             c++;
         }
     }
